@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp" android:layout_height="100dp"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:weightSum="1">
+
+       <ImageView
+           android:layout_width="match_parent"
+           android:layout_height="60dp"
+           android:scaleType="fitCenter"
+           android:src="@drawable/burger"
+           android:layout_gravity="center_vertical"
+           android:id="@+id/categoryImage"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FastFood"
+            android:layout_weight="0.2"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:id="@+id/categoryName"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="150 available"
+            android:textColor="@color/gray"
+            android:layout_weight="0.2"
+            android:textSize="12sp"
+            android:id="@+id/categoryProductsNumber"/>
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

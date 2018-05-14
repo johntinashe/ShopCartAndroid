@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#99000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="textColor">#0059A9</color>
+    <color name="blue">#3079ba</color>
+    <color name="green_bg">#1eb147</color>
+    <color name="purpl">#690462</color>
+    <color name="light_gray">#fbe2e2e2</color>
+    <color name="spots_dialog_color">#99000000</color>
+    <color name="red">#FF0000</color>
+    <color name="grnStart">#00ff00</color>
+    <color name="grnEnd">#00ff00</color>
+    <color name="green_light">#014001</color>
+
+    <color name="backgroundcolor">#fcfcfc</color>
+    <color name="lightgray">#ededed</color>
+    <color name="deeppurple">#7c4dff</color>
+    <color name="yello">#ffb300</color>
+    <color name="green">#00bfa5</color>
+    <color name="darkblue">#23283a</color>
+    <color name="testcolorblue">#152b38</color>
+    <color name="pink">#fe104d</color>
+    <color name="customTransparent">#cf000000</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="blueTrans">#b20059a9</color>
+    <color name="label">#C2185B</color>
+    <color name="light_white">#fafafa</color>
+    <color name="green_material">#00e676</color>
+</resources>

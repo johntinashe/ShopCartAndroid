@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigationHome"
+        android:icon="@drawable/ic_action_home_white"
+        android:title="Home" />
+    <item android:title="Search"
+        android:icon="@drawable/ic_action_search"
+        android:iconTint="@color/white"
+        android:id="@+id/search"/>
+    <item android:title="Categories"
+        android:icon="@drawable/ic_action_list"
+        android:iconTint="@color/white"
+        android:id="@+id/categories"/>
+    <item android:title="Favorites"
+        android:icon="@drawable/ic_action_favorites"
+        android:iconTint="@color/white"
+        android:id="@+id/favorites_nav_drawer"/>
+    <item android:title="All Products"
+        android:icon="@drawable/ic_action_basket"
+        android:iconTint="@color/white" />
+    <item android:title="My Cart"
+        android:icon="@drawable/ic_action_cart"
+        android:iconTint="@color/white"
+        android:id="@+id/navigationCart"/>
+    <group >
+        <item android:title="My Profile"
+            android:icon="@drawable/ic_action_profile_circle"
+            android:iconTint="@color/white"
+            android:id="@+id/myProfile"/>
+        <item android:title="Contact Us"
+            android:icon="@drawable/ic_action_message"
+            android:iconTint="@color/white"
+            android:id="@+id/contactUs"/>
+    </group>
+</menu>

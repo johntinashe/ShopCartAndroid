@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.shopcart.shopcart.PaymentActivity"
+    android:id="@+id/payment"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" android:id="@+id/toolbar" />
+
+    <!--<com.craftman.cardform.CardForm-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/card_form">-->
+
+    <!--</com.craftman.cardform.CardForm>-->
+
+    <com.cooltechworks.creditcarddesign.CreditCardView
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/card_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <EditText
+            android:id="@+id/cardNumberET"
+            android:layout_width="0dp"
+            android:layout_height="39dp"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/card_inputs_bg"
+            android:ems="10"
+            android:hint="Card Number"
+            android:inputType="number"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:maxLength="16"/>
+
+        <ImageView
+            android:id="@+id/errorIconCardNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/cardNumberET"
+            app:layout_constraintEnd_toEndOf="@+id/cardNumberET"
+            app:layout_constraintTop_toTopOf="@+id/cardNumberET"
+            app:srcCompat="@drawable/ic_action_error_icon"
+            tools:ignore="ContentDescription" />
+
+        <EditText
+            android:id="@+id/cardNameET"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/card_inputs_bg"
+            android:ems="10"
+            android:hint="Name on Card"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardNumberET" />
+
+        <EditText
+            android:id="@+id/cardMYET"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/card_inputs_bg"
+            android:ems="10"
+            android:hint="MM/YY"
+            android:inputType="date"
+            android:maxLength="5"
+            android:padding="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/editTextCVC"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardNameET" />
+
+        <EditText
+            android:id="@+id/editTextCVC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/card_inputs_bg"
+            android:ems="10"
+            android:hint="CVC"
+            android:inputType="number"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cardMYET"
+            app:layout_constraintTop_toBottomOf="@+id/cardNameET"
+            android:maxLength="3"/>
+
+        <ImageView
+            android:id="@+id/errorIconName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/cardNameET"
+            app:layout_constraintEnd_toEndOf="@+id/cardNameET"
+            app:layout_constraintTop_toTopOf="@+id/cardNameET"
+            app:srcCompat="@drawable/ic_action_error_icon" />
+
+        <ImageView
+            android:id="@+id/errorIconDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/cardMYET"
+            app:layout_constraintEnd_toEndOf="@+id/cardMYET"
+            app:layout_constraintTop_toTopOf="@+id/cardMYET"
+            app:srcCompat="@drawable/ic_action_error_icon" />
+
+        <ImageView
+            android:id="@+id/errorIconCVC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextCVC"
+            app:layout_constraintEnd_toEndOf="@+id/editTextCVC"
+            app:layout_constraintTop_toTopOf="@+id/editTextCVC"
+            app:srcCompat="@drawable/ic_action_error_icon" />
+
+        <Button
+            android:id="@+id/payBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:background="@drawable/green_bg_price"
+            android:text="Pay $52.36"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

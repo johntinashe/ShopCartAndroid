@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Shop Cart</string>
+    <string name="todo">todo</string>
+    <string name="getStarted">Get Started</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="finish">Finish</string>
+    <string name="defaultValue">0</string>
+    <string name="empty_cart">You cart is empty!</string>
+    <string name="one_item">You have 1 item ready in your cart!</string>
+    <string name="msg_toast_max_value">Maximum Quantity Reached</string>
+    <string name="qty">Qty</string>
+    <string name="totalDefault">$0.00</string>
+    <string name="carrefour">Shop Cart</string>
+    <string name="hint_enter_a_message">Comment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="error">Please Enter all Values</string>
+    <string name="shortpass">Please enter at least 6 characters!</string>
+    <string name="checkEmail">Verification Email Sent</string>
+    <string name="verify">Please Verify your email first</string>
+    <string name="payment">Payment is being Processed .Go to payments to Check Status</string>
+    <string name="paymentSuccessful">Payment Successful your items will be delivered Soon thanks for shopping with us.</string>
+    <string name="featured_products">Featured Products</string>
+    <string name="logout">Logout</string>
+    <string name="available">%d Available</string>
+    <string name="numberOfPrd">%d</string>
+    <string name="order_placed">Order Placed Successfully on :</string>
+    <string name="order_no_15205550">Order Id: </string>
+    <string name="add_to_cart">Add to Cart</string>
+
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
+    <string name="number_picker_formatter">%02d</string>
+    <string name="paymentError">Sorry payment declined</string>
+    <string name="back_button">back button</string>
+    <string name="edit_profile">edit profile</string>
+    <string name="update">Update</string>
+</resources>
