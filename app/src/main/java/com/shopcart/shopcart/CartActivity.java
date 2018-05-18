@@ -100,9 +100,6 @@ public class CartActivity extends AppCompatActivity {
         cartRecyclerView.setHasFixedSize(true);
         totalToPay = findViewById(R.id.totalToPay);
         checkout = findViewById(R.id.checkoutBtn);
-        getCart();
-        getCartProducts();
-        getTotal();
 
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -380,6 +377,9 @@ public class CartActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+        getCart();
+        getCartProducts();
+        getTotal();
     }
 
     @Override

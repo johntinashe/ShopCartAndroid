@@ -109,7 +109,7 @@ public class Utils {
         final ImageView imageView = navHeaderView.findViewById(R.id.userProfileImgHeader);
         header = navHeaderView;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        if (auth.getCurrentUser().getUid() == null)
+        if (auth.getCurrentUser() == null)
             return;
         DocumentReference documentReference = db.collection("users").document(auth.getCurrentUser().getUid());
         documentReference.addSnapshotListener(activity,new EventListener<DocumentSnapshot>() {
