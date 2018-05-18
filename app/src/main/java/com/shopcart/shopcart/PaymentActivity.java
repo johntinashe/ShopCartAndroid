@@ -80,9 +80,6 @@ public class PaymentActivity extends AppCompatActivity {
         database = FirebaseFirestore.getInstance();
         androidId  = auth.getCurrentUser().getUid();
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         if (auth != null) {
             user = auth.getCurrentUser();
         }
@@ -259,48 +256,8 @@ public class PaymentActivity extends AppCompatActivity {
         assert extras != null;
         float amount = Float.parseFloat(extras.getString("price"));
         String name = extras.getString("purchase_name");
+        am = (int)amount + 10 +1;
 
-        HttpClient httpclient = new DefaultHttpClient();
-        String URL = "http://www.apilayer.net/api/live?access_key=fb6daf235a9756a4af496342c7a3ea97&currencies=TND";
-        HttpGet httpget= new HttpGet(URL);
-
-        HttpResponse response;
-        String server_response = null;
-        try {
-            response = httpclient.execute(httpget);
-            if(response.getStatusLine().getStatusCode()==200){
-                try {
-                    server_response = EntityUtils.toString(response.getEntity());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("Serverresponse", server_response );
-            } else {
-                Log.i("Serverresponse", "Failed to get server response" );
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject obj;
-        try {
-             obj = new JSONObject(server_response);
-
-        } catch (Throwable t) {
-           return;
-        }
-        try {
-
-            if(obj.getBoolean("success")){
-                JSONObject object =  obj.getJSONObject("quotes");
-                am = (int) (amount /object.getDouble("USDTND") );
-                am++;
-            }
-        } catch (JSONException e) {
-            snack("Sorry Something happened" + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
         payBtn =findViewById(R.id.payBtn);
         payBtn.setText("PAY $"+am);
 

@@ -107,7 +107,7 @@ public class CartActivity extends AppCompatActivity {
                if(Utils.testForConnection(getApplicationContext())){
                    Intent buyIntent = new Intent(getApplicationContext(),PaymentActivity.class);
                    buyIntent.putExtra("purchase_name","First Purchase");
-                   buyIntent.putExtra("price",totalToPay.getText().toString().replaceAll("DT",""));
+                   buyIntent.putExtra("price",totalToPay.getText().toString().replace("$",""));
                    startActivity(buyIntent);
                }else {
                    Toast.makeText(CartActivity.this, "Make sure you have internet!", Toast.LENGTH_SHORT).show();
@@ -203,7 +203,7 @@ public class CartActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                        holder.totalPrice.setText(df.format(total)+" DT");
+                        holder.totalPrice.setText("$"+df.format(total));
                         CartProduct cartProduct = new CartProduct(model.getNumber(),total);
                         cartAmount.collection("products")
                                   .document(documentSnapshot.getId())
@@ -277,7 +277,7 @@ public class CartActivity extends AppCompatActivity {
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                        if(documentSnapshots != null) {
                            if(documentSnapshots.isEmpty()){
-                               totalToPay.setText("0.00 DT");
+                               totalToPay.setText("$0.00");
                                checkout.setClickable(false);
                                checkout.setBackgroundColor(Color.GRAY);
                            }else {
@@ -285,7 +285,7 @@ public class CartActivity extends AppCompatActivity {
                                    if(snapshot.getType() == DocumentChange.Type.ADDED){
                                        CartProduct product = snapshot.getDocument().toObject(CartProduct.class);
                                        t[0] = t[0] + product.getTotal_price();
-                                       totalToPay.setText(df.format(t[0])+" DT");
+                                       totalToPay.setText(String.format("%s%s", getString(R.string.dollar_sign), df.format(t[0])));
                                        checkout.setClickable(true);
                                        checkout.setBackgroundResource(R.drawable.ripple_green_btn);
                                    }
@@ -293,14 +293,14 @@ public class CartActivity extends AppCompatActivity {
                                        CartProduct product = snapshot.getDocument().toObject(CartProduct.class);
 
                                        t[0] = t[0] + product.getTotal_price();
-                                       totalToPay.setText(df.format(t[0])+" DT");
+                                       totalToPay.setText("$"+df.format(t[0]));
                                        checkout.setClickable(true);
                                        checkout.setBackgroundResource(R.drawable.ripple_green_btn);
                                    }
                                    if(snapshot.getType()==DocumentChange.Type.REMOVED){
                                        CartProduct product = snapshot.getDocument().toObject(CartProduct.class);
                                        t[0] = t[0] - product.getTotal_price();
-                                       totalToPay.setText(df.format(t[0])+"");
+                                       totalToPay.setText(""+df.format(t[0]));
                                    }
 
                                }
@@ -376,10 +376,10 @@ public class CartActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        adapter.startListening();
         getCart();
         getCartProducts();
         getTotal();
+        adapter.startListening();
     }
 
     @Override

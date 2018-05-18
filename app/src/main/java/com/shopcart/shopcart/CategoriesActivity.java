@@ -31,6 +31,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.shopcart.shopcart.Utils.GridSpacingItemDecoration;
 import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.models.Category;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
@@ -125,13 +127,23 @@ public class CategoriesActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(final CategoryViewHolder holder, int position, Category model) {
+            protected void onBindViewHolder(final CategoryViewHolder holder, int position, final Category model) {
                 holder.name.setText(model.getName());
                // holder.nbProducts.setText(String.format("%d", model.getNumber_of_product()));
-                if(!model.getCatimage().equalsIgnoreCase("default") && model.getCatimage() != null){
-                    Picasso.with(getApplicationContext()).load(model.getCatimage()).into(holder.categoryImage);
-                }else{
+                if(!model.getCatimage().equalsIgnoreCase("default") && model.getCatimage() != null) {
+                    Picasso.with(getApplicationContext()).load(model.getCatimage()).networkPolicy(NetworkPolicy.OFFLINE)
+                            .into(holder.categoryImage, new Callback() {
+                                @Override
+                                public void onSuccess() {
 
+                                }
+
+                                @Override
+                                public void onError() {
+                                    Picasso.with(getApplicationContext()).load(model.getCatimage())
+                                            .into(holder.categoryImage);
+                                }
+                            });
                 }
                 final String id = options.getSnapshots().getSnapshot(position).getId();
                 db.collection("products").whereEqualTo("product_category_id",id)
@@ -139,7 +151,7 @@ public class CategoriesActivity extends AppCompatActivity {
                       @Override
                       public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                        if(!documentSnapshots.isEmpty()){
-                           holder.nbProducts.setText(documentSnapshots.size()+"");
+                           holder.nbProducts.setText(String.format("%d", documentSnapshots.size()));
                        }else{
                            holder.nbProducts.setText("0");
                        }

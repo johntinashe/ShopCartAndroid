@@ -39,4 +39,14 @@
     <string name="back_button">back button</string>
     <string name="edit_profile">edit profile</string>
     <string name="update">Update</string>
+    <string name="viewall">ViewAll</string>
+    <string name="reviews_0">Reviews (0)</string>
+    <string name="related_products">Related Products</string>
+    <string name="more">More</string>
+    <string name="nutritional_facts">Nutritional Facts</string>
+    <string name="sample">Pure water, fruit mix concentrate (apple, orange, pineapple, passion fruit, apricot, mango, guava, banana, lime), b-carotene E160A, sugar, citric acid, potassium sorbate, rich in vitamin C</string>
+    <string name="description">Description</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="_1">1</string>
+    <string name="dollar_sign">$</string>
 </resources>

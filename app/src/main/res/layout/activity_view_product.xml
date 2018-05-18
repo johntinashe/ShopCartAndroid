@@ -42,7 +42,8 @@
                     app:label_backgroundColor="@color/green_bg"
                     app:label_orientation="RIGHT_TOP"
                     app:label_text="252 In Stock"
-                    app:label_textSize="15sp" />
+                    app:label_textSize="15sp"
+                    tools:ignore="InefficientWeight" />
 
                 <!--<ImageView-->
                 <!--android:layout_width="match_parent"-->
@@ -135,7 +136,7 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginStart="5dp"
                     android:padding="5dp"
-                    android:text="20.52 DT"
+                    tools:text="20.52 DT"
                     android:textColor="@color/purpl"
                     android:textSize="22sp"
                     android:transitionName="productPrice" />
@@ -167,7 +168,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:text="Description"
+                            android:text="@string/description"
                             android:textSize="20sp" />
 
                         <!-- HEADER INDICATOR -->
@@ -233,7 +234,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:text="Ingredients"
+                            android:text="@string/ingredients"
                             android:textSize="20sp" />
 
                         <!-- HEADER INDICATOR -->
@@ -262,7 +263,7 @@
                             android:layout_marginEnd="10dp"
                             android:layout_marginStart="10dp"
                             android:padding="3dp"
-                            android:text="Pure water, fruit mix concentrate (apple, orange, pineapple, passion fruit, apricot, mango, guava, banana, lime), b-carotene E160A, sugar, citric acid, potassium sorbate, rich in vitamin C"
+                            android:text="@string/sample"
                             android:textSize="15sp" />
 
                     </com.github.florent37.expansionpanel.ExpansionLayout>
@@ -301,7 +302,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:text="Nutritional Facts"
+                            android:text="@string/nutritional_facts"
                             android:textSize="20sp" />
 
                         <!-- HEADER INDICATOR -->
@@ -328,7 +329,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:text="rjfjfjfjfjf"
                             android:textSize="15sp" />
 
                     </com.github.florent37.expansionpanel.ExpansionLayout>
@@ -356,7 +356,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="Related Products"
+                        android:text="@string/related_products"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:layout_weight="0.7"/>
@@ -368,7 +368,7 @@
                         android:layout_weight=".3"
                         android:gravity="end"
                         android:padding="8dp"
-                        android:text="More"
+                        android:text="@string/more"
                         android:textColor="@color/white" />
                 </LinearLayout>
 
@@ -395,7 +395,7 @@
                       android:layout_width="0dp"
                       android:layout_height="wrap_content"
                       android:padding="8dp"
-                      android:text="Reviews (0)"
+                      android:text="@string/reviews_0"
                       android:textColor="@color/white"
                       android:textSize="18sp"
                       android:layout_weight="0.7"/>
@@ -407,7 +407,7 @@
                       android:layout_weight="0.3"
                       android:gravity="end"
                       android:padding="8dp"
-                      android:text="ViewAll"
+                      android:text="@string/viewall"
                       android:textColor="@color/white" />
               </LinearLayout>
 
@@ -469,14 +469,14 @@
                     android:background="@drawable/edit_bg"
                     android:gravity="center"
                     android:inputType="number"
-                    android:text="1"
+                    android:text="@string/_1"
                     android:textColor="@color/purpl"
                     android:clickable="false"
                     android:focusable="false"
-                    android:layout_weight="0.4"/>
+                    android:layout_weight="0.4"
+                    tools:ignore="LabelFor" />
 
                 <ImageView
-
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:src="@drawable/ic_add_black_24dp"
@@ -485,9 +485,8 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:layout_weight="0.3"
-                    android:alpha="0.4"/>
-
-
+                    android:alpha="0.4"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
 
@@ -497,7 +496,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:background="@drawable/ripple_green_btn"
-                android:text="Add to Cart"
+                android:text="@string/add_to_cart"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="18sp"
