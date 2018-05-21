@@ -16,8 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-    }
 }
 
 dependencies {
@@ -73,15 +71,4 @@ dependencies {
     implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
 }
 apply plugin: 'com.google.gms.google-services'
-
-
-
-
-
-
-
-
-
-
-
 apply plugin: 'com.google.gms.google-services'

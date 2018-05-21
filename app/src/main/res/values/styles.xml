@@ -16,4 +16,8 @@
         <item name="DialogSpotCount">6</item>
     </style>
 
+    <style name="ScrollbarRecyclerView" parent="android:Widget">
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -33,8 +34,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.lid.lib.LabelImageView;
+import com.like.LikeButton;
 import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPicker;
 import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPickerListener;
+import com.shawnlin.numberpicker.NumberPicker;
 import com.shopcart.shopcart.Utils.GridSpacingItemDecoration;
 import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.models.Product;
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView goToCart;
     private ArcProgress arcProgress;
     //starting for the first time
-    public static final String GettingStarted = "GettingStarted" ;
+    public static final String GettingStarted = "GettingStarted";
 
     private final String KEY_RECYCLER_STATE = "recycler_state";
     private static Bundle mBundleRecyclerViewState;
@@ -89,30 +92,30 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         database = FirebaseFirestore.getInstance();
-        if(auth.getCurrentUser()!= null)
-        androidId  = auth.getCurrentUser().getUid();
+        if (auth.getCurrentUser() != null)
+            androidId = auth.getCurrentUser().getUid();
         products = new ArrayList<>();
 
-        final LayoutInflater inflater =(LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
-        View action_bar_view = inflater.inflate(R.layout.custom_tool ,null);
+        View action_bar_view = inflater.inflate(R.layout.custom_tool, null);
         assert actionBar != null;
         actionBar.setCustomView(action_bar_view);
         goToCart = action_bar_view.findViewById(R.id.toolbar_cart);
         ImageView drawerToggle = action_bar_view.findViewById(R.id.drawerToggle);
-        progressBar  = action_bar_view.findViewById(R.id.progressBar2);
+        progressBar = action_bar_view.findViewById(R.id.progressBar2);
         numberProducts = action_bar_view.findViewById(R.id.tv_number_of_products);
         goToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),CartActivity.class));
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
             }
         });
         slider();
 
         //Main screen recyclerView
         recyclerView = findViewById(R.id.mainRecyclerView);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         int spanCount = 2;
         int spacing = 10;
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         LinearLayout linearLayout = navigationView.findViewById(R.id.logout);
 
-        if(auth.getCurrentUser() != null){
+        if (auth.getCurrentUser() != null) {
             Utils.setNavigationView(
                     navigationView,
                     drawerLayout,
@@ -134,25 +137,25 @@ public class MainActivity extends AppCompatActivity {
                     linearLayout
             );
 
-            if( Utils.header != null){
-               ImageView img =  Utils.header.findViewById(R.id.userProfileImgHeader);
-               img.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View view) {
-                       chooseImage(MainActivity.this);
-                   }
-               });
+            if (Utils.header != null) {
+                ImageView img = Utils.header.findViewById(R.id.userProfileImgHeader);
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        chooseImage(MainActivity.this);
+                    }
+                });
 
-               arcProgress = Utils.header.findViewById(R.id.arc_progress);
+                arcProgress = Utils.header.findViewById(R.id.arc_progress);
             }
         }
 
 
     }
 
-    public void slider(){
+    public void slider() {
         BannerSlider bannerSlider = (BannerSlider) findViewById(R.id.banner_slider1);
-        List<Banner> banners=new ArrayList<>();
+        List<Banner> banners = new ArrayList<>();
         //add banner using image url
         //  banners.add(new RemoteBanner("Put banner image url here ..."));
         //add banner using resource drawable
@@ -170,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void getProducts(){
+    public void getProducts() {
 
         Query query = FirebaseFirestore.getInstance()
                 .collection("products")
@@ -181,11 +184,11 @@ public class MainActivity extends AppCompatActivity {
                 .setQuery(query, Product.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<Product, ProductHolder>(options){
+        adapter = new FirestoreRecyclerAdapter<Product, ProductHolder>(options) {
 
             @Override
             public ProductHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main_screen,null,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_single_item, null, false);
                 return new ProductHolder(view);
             }
 
@@ -193,35 +196,54 @@ public class MainActivity extends AppCompatActivity {
             protected void onBindViewHolder(final ProductHolder holder, final int position, final Product model) {
                 final int[] n = {1};
 
-                holder.price.setText(String.format("%s DT", model.getProduct_price()));
+                holder.price.setText(String.format("$%s", model.getProduct_price()));
                 holder.name.setText(model.getProduct_name());
 
                 holder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(MainActivity.this,ViewProductActivity.class);
+                        Intent intent = new Intent(MainActivity.this, ViewProductActivity.class);
 //                        Pair[] pairs = new Pair[3];
 //                        pairs[0] = new Pair<View,String>(holder.product_image,"productImage");
 //                        pairs[1] = new Pair<View,String>(holder.name,"productName");
 //                        pairs[2] = new Pair<View,String>(holder.price,"productPrice");
 //
 //                        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,pairs);
-                        intent.putExtra("product_id",options.getSnapshots().getSnapshot(position).getId());
+                        intent.putExtra("product_id", options.getSnapshots().getSnapshot(position).getId());
                         startActivity(intent);
                     }
                 });
 
-                holder.numberPicker.setListener(new ScrollableNumberPickerListener() {
+                holder.numberPicker.setMaxValue(model.getProduct_quantity());
+
+                holder.numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
-                    public void onNumberPicked(int value) {
-                        if(value == holder.numberPicker.getMaxValue()) {
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        if (newVal == holder.numberPicker.getMaxValue()) {
                             Toast.makeText(MainActivity.this, getString(R.string.msg_toast_max_value), Toast.LENGTH_LONG).show();
-                        }else {
-                           n[0] =value;
+                        } else {
+                            n[0] = newVal;
                         }
                     }
                 });
-                if(model.getProduct_image() != null){
+
+                if(model.getProduct_quantity()==0){
+                    holder.addToCart.setEnabled(false);
+                    holder.addToCart.setBackgroundResource(R.drawable.gray_add_to_cart_bg);
+                    holder.numberPicker.setVisibility(View.INVISIBLE);
+                   // holder.labelImageView.setLabelText("Out of Stock");
+                  //  holder.labelImageView.setLabelBackgroundColor(Color.RED);
+                  //  holder.labelImageView.setLabelTextColor(Color.WHITE);
+                }else{
+                    holder.addToCart.setEnabled(true);
+                    holder.addToCart.setBackgroundResource(R.drawable.blue_bg);
+                    holder.numberPicker.setVisibility(View.VISIBLE);
+                 //   holder.labelImageView.setLabelText("");
+                 //   holder.labelImageView.setLabelBackgroundColor(Color.WHITE);
+                 //   holder.labelImageView.setLabelTextColor(Color.WHITE);
+                }
+
+                if (model.getProduct_image() != null) {
                     Picasso.with(getApplicationContext()).load(model.getProduct_thumb_image()).networkPolicy(NetworkPolicy.OFFLINE)
                             .into(holder.product_image, new Callback() {
                                 @Override
@@ -240,22 +262,26 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         model.setId(options.getSnapshots().getSnapshot(position).getId());
-                        Utils.addToCart(model.getId(),n[0], model.getProduct_name(),numberProducts,goToCart,progressBar,androidId,MainActivity.this);
+                        Utils.addToCart(model.getId(), n[0], model.getProduct_name(), numberProducts, goToCart, progressBar, androidId, MainActivity.this);
                     }
                 });
+                String id = options.getSnapshots().getSnapshot(position).getId();
+                Utils.favorites(database,auth,id,MainActivity.this,holder.fav_button);
 
             }
         };
 
-       recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
     }
 
     private static class ProductHolder extends RecyclerView.ViewHolder {
-        TextView price,name;
+        TextView price, name;
         Button addToCart;
         View view;
+        LikeButton fav_button;
         LabelImageView product_image;
-        ScrollableNumberPicker numberPicker;
+        NumberPicker numberPicker;
+
         ProductHolder(View itemView) {
             super(itemView);
             view = itemView;
@@ -263,8 +289,9 @@ public class MainActivity extends AppCompatActivity {
             price = view.findViewById(R.id.product_price);
             name = view.findViewById(R.id.product_name);
             addToCart = view.findViewById(R.id.add_to_cart);
-            numberPicker = view.findViewById(R.id.number_picker_horizontal);
+            numberPicker = view.findViewById(R.id.number_picker);
             product_image = view.findViewById(R.id.product_image);
+            fav_button = view.findViewById(R.id.fav_button_heart);
             numberPicker.setMinValue(1);
         }
     }
@@ -274,18 +301,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         user = auth.getCurrentUser();
-        if(user!=null){
+        if (user != null) {
             adapter.startListening();
-            Utils.getCart(androidId,this,numberProducts);
-        }else {
+            Utils.getCart(androidId, this, numberProducts);
+        } else {
             String value = settings.getString("key", "");
-            if(value.equalsIgnoreCase("true")){
-                Intent intent = new Intent(this,RegisterAndLoginActivity.class);
+            if (value.equalsIgnoreCase("true")) {
+                Intent intent = new Intent(this, RegisterAndLoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 finish();
                 startActivity(intent);
-            }else {
-                Intent intent = new Intent(this,GetStartedActivity.class);
+            } else {
+                Intent intent = new Intent(this, GetStartedActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 finish();
                 startActivity(intent);
@@ -297,16 +324,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-       adapter.stopListening();
+        adapter.stopListening();
     }
 
-    public void check(){
+    public void check() {
         SharedPreferences shared = getSharedPreferences(GettingStarted, Context.MODE_PRIVATE);
         String check = (shared.getString("finalFinished", ""));
 
-         if(check.equalsIgnoreCase("true")){
-           Toast.makeText(this,check,Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this,GetStartedActivity.class);
+        if (check.equalsIgnoreCase("true")) {
+            Toast.makeText(this, check, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, GetStartedActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
@@ -315,36 +342,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void chooseImage(Activity activity){
+    public void chooseImage(Activity activity) {
         Intent gallery_intent = new Intent();
         gallery_intent.setType("image/*");
         gallery_intent.setAction(Intent.ACTION_GET_CONTENT);
-        if(gallery_intent.resolveActivity(getPackageManager()) != null){
-            activity.startActivityForResult(Intent.createChooser(gallery_intent,"Select Image"),1);
+        if (gallery_intent.resolveActivity(getPackageManager()) != null) {
+            activity.startActivityForResult(Intent.createChooser(gallery_intent, "Select Image"), 1);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Utils.uploadImage(data,requestCode,resultCode,this,auth,arcProgress);
+        Utils.uploadImage(data, requestCode, resultCode, this, auth, arcProgress);
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         // save RecyclerView state
         mBundleRecyclerViewState = new Bundle();
         Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
         mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
+
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
-
         // restore RecyclerView state
         if (mBundleRecyclerViewState != null) {
             Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);

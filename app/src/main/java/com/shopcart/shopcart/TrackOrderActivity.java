@@ -183,6 +183,18 @@ public class TrackOrderActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+
+        if (intent != null && orderIdEditText.getText() != null) {
+            String id = intent.getStringExtra("order_id");
+            orderIdEditText.setText(id);
+            searchOrder();
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         if(v.getId() == R.id.search_order_btn) {
             searchOrder();

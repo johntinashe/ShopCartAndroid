@@ -90,6 +90,8 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
     private FirestoreRecyclerAdapter adapter,adapterRelatedProducts;
     private LikeButton fav_button;
     private ArcProgress arcProgress;
+    private LinearLayout ingredients,facts;
+    private TextView ingredientsTv;
 
 
     @Override
@@ -141,6 +143,7 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
         androidId = auth.getCurrentUser().getUid();
         name = findViewById(R.id.view_product_name);
         description = findViewById(R.id.view_product_description);
+        ingredientsTv = findViewById(R.id.ingredients_tv);
         price = findViewById(R.id.view_product_price);
         rating = findViewById(R.id.view_product_rating);
         ratingBar = findViewById(R.id.materialRatingBar);
@@ -161,59 +164,8 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
 
         //favorite button
         fav_button = findViewById(R.id.fav_button);
-        database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
-                .document(prodId)
-                .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                        if(documentSnapshot.exists() && e ==null){
-                            fav_button.setLiked(true);
-                        }else{
-                            fav_button.setLiked(false);
-                        }
-                    }
-                });
-        fav_button.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButton) {
-                Map<String,String> favorite = new HashMap<>();
-                favorite.put("product_id",prodId);
-                database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
-                        .document(prodId)
-                        .set(favorite)
-                        .addOnCompleteListener(ViewProductActivity.this,new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(ViewProductActivity.this, "Added to favorites", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    if(task.getException() != null)
-                                    Toast.makeText(ViewProductActivity.this, "Sorry something happened "+ task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
 
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
-                        .document(prodId)
-                        .delete()
-                        .addOnCompleteListener( new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(ViewProductActivity.this, "Removed from favorites", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    if(task.getException() != null)
-                                        Toast.makeText(ViewProductActivity.this, "Sorry something happened "+ task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-
-
+        Utils.favorites(database,auth,prodId,this,fav_button);
 
 
         //increase decrease buttons and edit text
@@ -273,19 +225,37 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
 
     public void showProduct(String id){
         final LabelImageView prdImg = findViewById(R.id.productImage);
+        ingredients = findViewById(R.id.ingredients);
+        facts = findViewById(R.id.facts);
         database.collection("products").document(id)
                 .addSnapshotListener(ViewProductActivity.this,new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                         if(documentSnapshot.exists()){
+
                             final Product product = documentSnapshot.toObject(Product.class);
+
+                            if (product.getProduct_nutritional_facts() != null) {
+                                facts.setVisibility(View.VISIBLE);
+                            }
+
+                            if (product.getProduct_ingredients() != null) {
+                                ingredients.setVisibility(View.VISIBLE);
+                                ingredientsTv.setText(product.getProduct_ingredients());
+                            }
+
                             name.setText(product.getProduct_name());
                             description.setText(product.getProduct_description());
                             toolbarTitle.setText(product.getProduct_name());
-                            price.setText(product.getProduct_price()+"DT");
+                            price.setText("$" +product.getProduct_price());
                             rating.setText(product.getProduct_rating()+"");
                             ratingBar.setRating(product.getProduct_rating());
                             prdImg.setLabelText(product.getProduct_quantity()+" In Stock");
+                            if(product.getProduct_quantity()==0) {
+                                prdImg.setLabelBackgroundColor(Color.RED);
+                            }else{
+                                prdImg.setLabelBackgroundColor(getResources().getColor(R.color.green_bg));
+                            }
                             getRelatedProducts(product.getProduct_category_id());
                             adapterRelatedProducts.startListening();
                             Picasso.with(getApplicationContext()).load(product.getProduct_image()).networkPolicy(NetworkPolicy.OFFLINE)
@@ -312,6 +282,17 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
                 .collection("reviews")
                 .whereEqualTo("prodId",prodId);
 
+        database.collection("reviews").whereEqualTo("prodId",prodId).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                if(documentSnapshots == null) {
+                    numberOfReviews.setText("Reviews 0");
+                }else {
+                    numberOfReviews.setText(String.format("Reviews (%d)", documentSnapshots.size()));
+                }
+            }
+        });
+
 
         final FirestoreRecyclerOptions<Review> options = new FirestoreRecyclerOptions.Builder<Review>()
                 .setQuery(query, Review.class)
@@ -333,7 +314,6 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
                 holder.ratingBar.setClickable(false);
                 holder.ratingBar.setActivated(false);
                 holder.time.setText(GetLastSeen.getTimeAgo(model.getTime(),ViewProductActivity.this));
-                numberOfReviews.setText(String.format("Reviews (%d)", options.getSnapshots().size()));
 
                 database.collection("users").document(model.getUser_id()).addSnapshotListener(ViewProductActivity.this,new EventListener<DocumentSnapshot>() {
                     @Override
@@ -472,9 +452,19 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
             numberOfLikes = view.findViewById(R.id.numberOfLikes);
         }
 
-        public void setProfileImg(String url,Context context){
+         void setProfileImg(final String url, final Context context){
             if(!url.equalsIgnoreCase("default")){
-                Picasso.with(context).load(url).placeholder(R.drawable.avatar).into(profileImg);
+                Picasso.with(context).load(url).placeholder(R.drawable.avatar).networkPolicy(NetworkPolicy.OFFLINE).into(profileImg, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context).load(url).placeholder(R.drawable.avatar).into(profileImg);
+                    }
+                });
             }
         }
 

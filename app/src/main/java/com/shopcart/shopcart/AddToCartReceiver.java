@@ -29,6 +29,7 @@ public class AddToCartReceiver extends BroadcastReceiver {
             final FirebaseFirestore db = FirebaseFirestore.getInstance();
             if(intent.getStringExtra("product_id") != null){
                 final String id = intent.getStringExtra("product_id");
+                final String userId = intent.getStringExtra("user_id");
                 db.collection("products").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -38,7 +39,7 @@ public class AddToCartReceiver extends BroadcastReceiver {
                               final Product product = task.getResult().toObject(Product.class);
                               map.put("number",1);
                               map.put("total_price",product.getProduct_price());
-                              db.collection("carts").document("164150776121ddcc").collection("products")
+                              db.collection("carts").document(userId).collection("products")
                                       .document(id)
                                       .set(map)
                                       .addOnCompleteListener(new OnCompleteListener<Void>() {

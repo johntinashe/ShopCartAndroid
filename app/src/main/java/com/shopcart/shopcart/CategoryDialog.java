@@ -253,7 +253,6 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
                     @Override
                     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                         nb[0] = newVal;
-                        Log.d("value", oldVal  + " " + newVal);
                     }
                 });
 

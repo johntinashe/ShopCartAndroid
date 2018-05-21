@@ -38,6 +38,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.shopcart.shopcart.CartActivity;
 import com.shopcart.shopcart.CategoriesActivity;
 import com.shopcart.shopcart.FavoritesActivity;
@@ -46,6 +48,7 @@ import com.shopcart.shopcart.MainActivity;
 import com.shopcart.shopcart.R;
 import com.shopcart.shopcart.RegisterAndLoginActivity;
 import com.shopcart.shopcart.ResultActivity;
+import com.shopcart.shopcart.ViewProductActivity;
 import com.shopcart.shopcart.models.CartProduct;
 import com.shopcart.shopcart.models.Product;
 import com.shopcart.shopcart.models.User;
@@ -172,22 +175,22 @@ public class Utils {
                         Intent intent = new Intent(activity.getApplicationContext(), HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("fromWhere", "fromProfile");
-                        activity.getApplicationContext().startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START);
+                        activity.getApplicationContext().startActivity(intent);
                         return true;
                     }
                     case R.id.search: {
                         Intent intent = new Intent(activity.getApplicationContext(), ResultActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        activity.getApplicationContext().startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START);
+                        activity.getApplicationContext().startActivity(intent);
                         return true;
                     }
                     case R.id.favorites_nav_drawer: {
                         Intent intent = new Intent(activity.getApplicationContext(), FavoritesActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        activity.getApplicationContext().startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START);
+                        activity.getApplicationContext().startActivity(intent);
                         return true;
                     }
                     case R.id.navigationCart: {
@@ -200,8 +203,8 @@ public class Utils {
                     case R.id.navigationHome : {
                         Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        activity.getApplicationContext().startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START);
+                        activity.getApplicationContext().startActivity(intent);
                         return true;
                     }
                     default:
@@ -405,5 +408,61 @@ public class Utils {
     }
 
 
+    //favorites method
+    public static void favorites(final FirebaseFirestore database, final FirebaseAuth auth, final String prodId , final Activity activity , final LikeButton fav_button) {
+        if(auth.getCurrentUser() == null)
+            return;
+        database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
+                .document(prodId)
+                .addSnapshotListener(activity, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        if(documentSnapshot.exists() && e ==null){
+                            fav_button.setLiked(true);
+                        }else{
+                            fav_button.setLiked(false);
+                        }
+                    }
+                });
+        fav_button.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                Map<String,String> favorite = new HashMap<>();
+                favorite.put("product_id",prodId);
+                database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
+                        .document(prodId)
+                        .set(favorite)
+                        .addOnCompleteListener(activity,new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(activity, "Added to favorites", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    if(task.getException() != null)
+                                        Toast.makeText(activity, "Sorry something happened "+ task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
+                        .document(prodId)
+                        .delete()
+                        .addOnCompleteListener( new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(activity, "Removed from favorites", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    if(task.getException() != null)
+                                        Toast.makeText(activity, "Sorry something happened "+ task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
+    }
 
 }

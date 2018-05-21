@@ -16,6 +16,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:layout_marginTop="5dp"
                 android:id="@+id/drawerToggle"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -26,12 +27,13 @@
                 android:layout_marginStart="5dp"/>
 
             <TextView
-                android:layout_marginTop="5dp"
                 android:id="@+id/toolbarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="7dp"
                 android:gravity="center"
                 android:text="@string/carrefour"
                 android:textSize="22sp"
@@ -58,12 +60,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/toolbar_cart"
-                    android:layout_marginStart="13dp"
+                    android:layout_marginStart="12dp"
                     android:background="@drawable/circle_bg"
                     android:padding="2dp"
                     android:text="@string/defaultValue"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="11sp" />
 
                 <ProgressBar
                     android:id="@+id/progressBar2"

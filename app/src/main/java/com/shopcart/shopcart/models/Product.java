@@ -1,5 +1,7 @@
 package com.shopcart.shopcart.models;
 
+import android.support.annotation.Nullable;
+
 /**
  * Created by John on 22/1/2018.featured_products
  */
@@ -16,12 +18,14 @@ public class Product{
     private String product_image;
     private String product_thumb_image;
     private String product_short_desc;
+    @Nullable private String product_ingredients;
+    @Nullable private String product_nutritional_facts;
 
 
     public Product() {
     }
 
-    public Product(String id, float product_price, String product_name, String product_description, float product_rating, String product_category_id, int product_quantity, boolean product_status, String product_image, String product_thumb_image, String product_short_desc) {
+    public Product(String id, float product_price, String product_name, String product_description, float product_rating, String product_category_id, int product_quantity, boolean product_status, String product_image, String product_thumb_image, String product_short_desc, @Nullable String product_ingredients, @Nullable String product_nutritional_facts) {
         this.id = id;
         this.product_price = product_price;
         this.product_name = product_name;
@@ -33,6 +37,26 @@ public class Product{
         this.product_image = product_image;
         this.product_thumb_image = product_thumb_image;
         this.product_short_desc = product_short_desc;
+        this.product_ingredients = product_ingredients;
+        this.product_nutritional_facts = product_nutritional_facts;
+    }
+
+    @Nullable
+    public String getProduct_ingredients() {
+        return product_ingredients;
+    }
+
+    public void setProduct_ingredients(@Nullable String product_ingredients) {
+        this.product_ingredients = product_ingredients;
+    }
+
+    @Nullable
+    public String getProduct_nutritional_facts() {
+        return product_nutritional_facts;
+    }
+
+    public void setProduct_nutritional_facts(@Nullable String product_nutritional_facts) {
+        this.product_nutritional_facts = product_nutritional_facts;
     }
 
     public String getProduct_short_desc() {

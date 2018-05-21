@@ -28,7 +28,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:focusableInTouchMode="true">
 
                 <com.lid.lib.LabelImageView
                     android:id="@+id/productImage"
@@ -195,7 +196,9 @@
                             android:id="@+id/view_product_description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginStart="10dp"
+                            android:padding="3dp"
                             android:textSize="15sp" />
 
                     </com.github.florent37.expansionpanel.ExpansionLayout>
@@ -213,7 +216,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/ingredients"
+                    android:visibility="gone">
 
                     <View
                         android:layout_width="match_parent"
@@ -263,7 +268,7 @@
                             android:layout_marginEnd="10dp"
                             android:layout_marginStart="10dp"
                             android:padding="3dp"
-                            android:text="@string/sample"
+                            android:id="@+id/ingredients_tv"
                             android:textSize="15sp" />
 
                     </com.github.florent37.expansionpanel.ExpansionLayout>
@@ -281,7 +286,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/facts"
+                    android:visibility="gone">
 
                     <View
                         android:layout_width="match_parent"

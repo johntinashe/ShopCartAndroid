@@ -49,4 +49,9 @@
     <string name="ingredients">Ingredients</string>
     <string name="_1">1</string>
     <string name="dollar_sign">$</string>
+    <string name="repeat">Repeat</string>
+    <string name="track">Track</string>
+    <string name="cancel">Cancel</string>
+    <string name="sub_total">Sub total</string>
+    <string name="total_amount">TOTAL AMOUNT</string>
 </resources>
