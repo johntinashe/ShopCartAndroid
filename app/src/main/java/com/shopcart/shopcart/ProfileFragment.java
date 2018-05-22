@@ -43,6 +43,7 @@ public class ProfileFragment extends Fragment {
     private ImageView changeProfile;
     private View view;
     private CircleImageView circleImageView;
+    private Activity activity;
 
 
     public ProfileFragment() {
@@ -65,6 +66,7 @@ public class ProfileFragment extends Fragment {
         membership = view.findViewById(R.id.profile_membership);
         changeProfile = view.findViewById(R.id.change_profile_image);
         circleImageView = view.findViewById(R.id.circleImageView);
+        activity = getActivity();
         getUserProfile();
         return view;
     }
@@ -74,7 +76,7 @@ public class ProfileFragment extends Fragment {
 
         if (auth.getCurrentUser() != null) {
             user.collection("users").document(auth.getCurrentUser().getUid())
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    .addSnapshotListener(activity, new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(DocumentSnapshot documentSnapshot, final FirebaseFirestoreException e) {
                             if(documentSnapshot.exists()){

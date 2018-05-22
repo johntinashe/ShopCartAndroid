@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -35,8 +33,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.lid.lib.LabelImageView;
 import com.like.LikeButton;
-import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPicker;
-import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPickerListener;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.shopcart.shopcart.Utils.GridSpacingItemDecoration;
 import com.shopcart.shopcart.Utils.Utils;
@@ -68,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
     //starting for the first time
     public static final String GettingStarted = "GettingStarted";
 
-    private final String KEY_RECYCLER_STATE = "recycler_state";
-    private static Bundle mBundleRecyclerViewState;
+
     //Firebase
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -203,12 +198,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(MainActivity.this, ViewProductActivity.class);
-//                        Pair[] pairs = new Pair[3];
-//                        pairs[0] = new Pair<View,String>(holder.product_image,"productImage");
-//                        pairs[1] = new Pair<View,String>(holder.name,"productName");
-//                        pairs[2] = new Pair<View,String>(holder.price,"productPrice");
-//
-//                        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,pairs);
                         intent.putExtra("product_id", options.getSnapshots().getSnapshot(position).getId());
                         startActivity(intent);
                     }
@@ -219,11 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 holder.numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
                     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                        if (newVal == holder.numberPicker.getMaxValue()) {
-                            Toast.makeText(MainActivity.this, getString(R.string.msg_toast_max_value), Toast.LENGTH_LONG).show();
-                        } else {
                             n[0] = newVal;
-                        }
                     }
                 });
 
@@ -357,24 +342,7 @@ public class MainActivity extends AppCompatActivity {
         Utils.uploadImage(data, requestCode, resultCode, this, auth, arcProgress);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // save RecyclerView state
-        mBundleRecyclerViewState = new Bundle();
-        Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
-        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
 
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // restore RecyclerView state
-        if (mBundleRecyclerViewState != null) {
-            Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
-            recyclerView.getLayoutManager().onRestoreInstanceState(listState);
-        }
-    }
 
 }

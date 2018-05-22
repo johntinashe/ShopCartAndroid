@@ -3,6 +3,7 @@ package com.shopcart.shopcart;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,27 +16,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
 import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.adapters.MessageAdapter;
 import com.shopcart.shopcart.models.Message;
-import com.shopcart.shopcart.models.User;
 import com.stfalcon.chatkit.messages.MessageInput;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,24 +112,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        database.collection("users").document(auth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                      User user = documentSnapshot.toObject(User.class);
-                      Map<String,String> map = new HashMap<>();
-                      map.put("username", user.getName() + " " + user.getSurname());
-                      database.collection("messages").document(auth.getCurrentUser().getUid())
-                              .set(map);
-                    }
-                });
-    }
-
-    private void send_message(String s) {
+    private void send_message(final String s) {
 
         if(!TextUtils.isEmpty(s)){
             if (!Utils.testForConnection(this)){
@@ -148,7 +127,16 @@ public class ChatActivity extends AppCompatActivity {
                 messageMap.put("mId",mId);
                 messageMap.put("time",FieldValue.serverTimestamp());
 
-                database.collection("messages").document(auth.getCurrentUser().getUid()).collection("userQueries").add(messageMap);
+                database.collection("messages").document(auth.getCurrentUser().getUid()).collection("userQueries").add(messageMap)
+                        .addOnCompleteListener(ChatActivity.this, new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                Map<String, String> map = new HashMap<>();
+                                map.put("lastMsg", s);
+                                database.collection("messages").document(auth.getCurrentUser().getUid())
+                                        .set(map);
+                            }
+                        });
 
             }
 
@@ -159,7 +147,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private void loadMessages() {
         database.collection("messages").document(auth.getCurrentUser().getUid()).collection("userQueries")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .orderBy("time", Query.Direction.ASCENDING)
+                .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                         for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()){

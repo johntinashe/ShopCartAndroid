@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -114,13 +113,13 @@ public class RegisterFragment extends Fragment {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
-        auth.createUserWithEmailAndPassword(em,pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(em, pass).addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                 String token = FirebaseInstanceId.getInstance().getToken();
                 User user = new User(nm,ad,ph,sur,token,"Silver","default","default");
                 database.collection("users").document(authResult.getUser().getUid())
-                        .set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        .set(user).addOnSuccessListener(getActivity(), new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         dialog.dismiss();

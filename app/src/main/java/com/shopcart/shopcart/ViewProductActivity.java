@@ -1,7 +1,6 @@
 package com.shopcart.shopcart;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +17,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,13 +43,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.lid.lib.LabelImageView;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
-import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPicker;
-import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPickerListener;
+import com.shawnlin.numberpicker.NumberPicker;
 import com.shopcart.shopcart.Utils.GetLastSeen;
 import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.models.Like;
@@ -67,7 +62,6 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
@@ -91,7 +85,7 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
     private LikeButton fav_button;
     private ArcProgress arcProgress;
     private LinearLayout ingredients,facts;
-    private TextView ingredientsTv;
+    private TextView ingredientsTv, factsTv;
 
 
     @Override
@@ -144,6 +138,7 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
         name = findViewById(R.id.view_product_name);
         description = findViewById(R.id.view_product_description);
         ingredientsTv = findViewById(R.id.ingredients_tv);
+        factsTv = findViewById(R.id.facts_tv);
         price = findViewById(R.id.view_product_price);
         rating = findViewById(R.id.view_product_rating);
         ratingBar = findViewById(R.id.materialRatingBar);
@@ -173,7 +168,6 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
         decrease = findViewById(R.id.minus_btn);
         value = findViewById(R.id.qty_value);
 
-        increase.setOnClickListener(this);
         decrease.setOnClickListener(this);
 
         //Add to cart button
@@ -237,12 +231,28 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
 
                             if (product.getProduct_nutritional_facts() != null) {
                                 facts.setVisibility(View.VISIBLE);
+                                factsTv.setText(product.getProduct_nutritional_facts());
                             }
 
                             if (product.getProduct_ingredients() != null) {
                                 ingredients.setVisibility(View.VISIBLE);
                                 ingredientsTv.setText(product.getProduct_ingredients());
                             }
+
+
+                            increase.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String n = value.getText().toString();
+                                    if (!TextUtils.isEmpty(n)) {
+                                        int i = Integer.parseInt(n);
+                                        if (i <= product.getProduct_quantity())
+                                            i++;
+                                        value.setText(String.format("%d", i));
+                                    }
+                                }
+                            });
+
 
                             name.setText(product.getProduct_name());
                             description.setText(product.getProduct_description());
@@ -253,7 +263,11 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
                             prdImg.setLabelText(product.getProduct_quantity()+" In Stock");
                             if(product.getProduct_quantity()==0) {
                                 prdImg.setLabelBackgroundColor(Color.RED);
+                                addToCartBtn.setClickable(false);
+                                addToCartBtn.setBackgroundResource(R.drawable.add_to_cart_disabled);
                             }else{
+                                addToCartBtn.setClickable(true);
+                                addToCartBtn.setBackgroundResource(R.drawable.ripple_green_btn);
                                 prdImg.setLabelBackgroundColor(getResources().getColor(R.color.green_bg));
                             }
                             getRelatedProducts(product.getProduct_category_id());
@@ -476,15 +490,6 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.plus_btn:{
-                String n = value.getText().toString();
-                if(!TextUtils.isEmpty(n)){
-                  int i = Integer.parseInt(n);
-                  i++;
-                  value.setText(String.format("%d", i));
-                }
-                break;
-            }
             case R.id.minus_btn:{
                 String n = value.getText().toString();
                 if(!TextUtils.isEmpty(n)){
@@ -554,7 +559,7 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public PrdViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main_screen,null,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.related_single_item, null, false);
                 return new PrdViewHolder(view);
             }
 
@@ -562,18 +567,30 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
             protected void onBindViewHolder(final PrdViewHolder holder, final int position, final Product model) {
                 final int[] n = {1};
                 holder.productName.setText(model.getProduct_name());
-                holder.productPrice.setText(model.getProduct_price()+ "DT");
+                holder.productPrice.setText("$" + model.getProduct_price());
                 holder.number_picker_horizontal.setMinValue(1);
-                holder.number_picker_horizontal.setListener(new ScrollableNumberPickerListener() {
+                holder.number_picker_horizontal.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
-                    public void onNumberPicked(int value) {
-                        if(value == holder.number_picker_horizontal.getMaxValue()) {
-                            Toast.makeText(ViewProductActivity.this, getString(R.string.msg_toast_max_value), Toast.LENGTH_LONG).show();
-                        }else {
-                            n[0] =value;
-                        }
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        n[0] = newVal;
                     }
                 });
+
+                if (model.getProduct_quantity() == 0) {
+                    holder.addtoCart.setEnabled(false);
+                    holder.addtoCart.setBackgroundResource(R.drawable.gray_add_to_cart_bg);
+                    holder.number_picker_horizontal.setVisibility(View.INVISIBLE);
+                    // holder.labelImageView.setLabelText("Out of Stock");
+                    //  holder.labelImageView.setLabelBackgroundColor(Color.RED);
+                    //  holder.labelImageView.setLabelTextColor(Color.WHITE);
+                } else {
+                    holder.addtoCart.setEnabled(true);
+                    holder.addtoCart.setBackgroundResource(R.drawable.blue_bg);
+                    holder.number_picker_horizontal.setVisibility(View.VISIBLE);
+                    //   holder.labelImageView.setLabelText("");
+                    //   holder.labelImageView.setLabelBackgroundColor(Color.WHITE);
+                    //   holder.labelImageView.setLabelTextColor(Color.WHITE);
+                }
 
 
                 holder.addtoCart.setOnClickListener(new View.OnClickListener() {
@@ -614,39 +631,6 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
         recyclerViewRelatedProducts.setAdapter(adapterRelatedProducts);
     }
 
-    public static class PrdViewHolder extends RecyclerView.ViewHolder{
-        View view;
-        TextView productName,productPrice;
-        ImageView productImage;
-        Button addtoCart;
-        ScrollableNumberPicker number_picker_horizontal;
-        PrdViewHolder(View itemView) {
-            super(itemView);
-            view = itemView;
-
-            productName = view.findViewById(R.id.product_name);
-            productPrice = view.findViewById(R.id.product_price);
-            productImage = view.findViewById(R.id.product_image);
-            addtoCart = view.findViewById(R.id.add_to_cart);
-            number_picker_horizontal = view.findViewById(R.id.number_picker_horizontal);
-        }
-
-    }
-
-    public void setImage(Activity activity){
-        Intent gallery_intent = new Intent();
-        gallery_intent.setType("image/*");
-        gallery_intent.setAction(Intent.ACTION_GET_CONTENT);
-        activity.startActivityForResult(Intent.createChooser(gallery_intent,"Select Image"),1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Utils.uploadImage(data,requestCode,resultCode,this,auth,arcProgress);
-    }
-
-
     public void getNotification(final int n) {
         final ImageView bell = findViewById(R.id.noti_bell);
 
@@ -682,7 +666,7 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
                                         database.collection("notifications").document(prodId).collection("subscribers")
                                                 .document(auth.getCurrentUser().getUid())
                                                 .set(map)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                .addOnCompleteListener(ViewProductActivity.this, new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if(task.isSuccessful()){
@@ -700,6 +684,39 @@ public class ViewProductActivity extends AppCompatActivity implements View.OnCli
             bell.setVisibility(View.INVISIBLE);
             bell.setClickable(false);
         }
+    }
+
+    public void setImage(Activity activity) {
+        Intent gallery_intent = new Intent();
+        gallery_intent.setType("image/*");
+        gallery_intent.setAction(Intent.ACTION_GET_CONTENT);
+        activity.startActivityForResult(Intent.createChooser(gallery_intent, "Select Image"), 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Utils.uploadImage(data, requestCode, resultCode, this, auth, arcProgress);
+    }
+
+    public static class PrdViewHolder extends RecyclerView.ViewHolder {
+        View view;
+        TextView productName, productPrice;
+        ImageView productImage;
+        Button addtoCart;
+        NumberPicker number_picker_horizontal;
+
+        PrdViewHolder(View itemView) {
+            super(itemView);
+            view = itemView;
+
+            productName = view.findViewById(R.id.product_name);
+            productPrice = view.findViewById(R.id.product_price);
+            productImage = view.findViewById(R.id.product_image);
+            addtoCart = view.findViewById(R.id.add_to_cart);
+            number_picker_horizontal = view.findViewById(R.id.number_picker);
+        }
+
     }
 
 }

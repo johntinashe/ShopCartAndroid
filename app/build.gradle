@@ -44,7 +44,6 @@ dependencies {
     implementation 'com.github.d-max:spots-dialog:0.7@aar'
     implementation 'me.zhanghai.android.materialratingbar:library:1.2.0'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    implementation 'com.michaelmuenzer.android:ScrollableNumberPicker:0.2.2'
     implementation 'gr.pantrif:easy-android-splash-screen:0.0.1'
     implementation 'com.ss.bannerslider:bannerslider:1.8.0'
     implementation 'com.shawnlin:number-picker:2.4.6'
@@ -70,5 +69,4 @@ dependencies {
     implementation 'com.github.florent37:expansionpanel:1.0.7'
     implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
 }
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.gms.google-services'

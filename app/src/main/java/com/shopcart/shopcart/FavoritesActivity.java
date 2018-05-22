@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -172,29 +171,30 @@ public class FavoritesActivity extends AppCompatActivity {
                 .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        if(documentSnapshots.isEmpty()){
-                            em1.setVisibility(View.VISIBLE);
-                            em2.setVisibility(View.VISIBLE);
-                            img.setVisibility(View.VISIBLE);
-                            empBtn.setVisibility(View.VISIBLE);
-                            YoYo.with(Techniques.FadeIn)
-                                    .duration(700)
-                                    .playOn(em1);
-                            YoYo.with(Techniques.FadeIn)
-                                    .duration(1000)
-                                    .playOn(em2);
-                            YoYo.with(Techniques.FadeIn)
-                                    .duration(1200)
-                                    .playOn(img);
-                            YoYo.with(Techniques.FadeIn)
-                                    .duration(1500)
-                                    .playOn(empBtn);
-                        }else{
-                            em1.setVisibility(View.INVISIBLE);
-                            em2.setVisibility(View.INVISIBLE);
-                            img.setVisibility(View.INVISIBLE);
-                            empBtn.setVisibility(View.INVISIBLE);
-                        }
+                        if (documentSnapshots != null)
+                            if (documentSnapshots.isEmpty()) {
+                                em1.setVisibility(View.VISIBLE);
+                                em2.setVisibility(View.VISIBLE);
+                                img.setVisibility(View.VISIBLE);
+                                empBtn.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(700)
+                                        .playOn(em1);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(em2);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1200)
+                                        .playOn(img);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1500)
+                                        .playOn(empBtn);
+                            } else {
+                                em1.setVisibility(View.INVISIBLE);
+                                em2.setVisibility(View.INVISIBLE);
+                                img.setVisibility(View.INVISIBLE);
+                                empBtn.setVisibility(View.INVISIBLE);
+                            }
                     }
                 });
 

@@ -49,8 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-            android:launchMode="singleTop"/>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop" />
         <activity android:name=".GetStartedActivity" />
         <activity
             android:name=".CartActivity"
@@ -71,19 +72,26 @@
         <activity android:name=".CategoriesActivity" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".OrderStatusActivity" />
-        <activity android:name=".HomeActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".HomeActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".ChatActivity"
+        <activity
+            android:name=".ChatActivity"
             android:parentActivityName=".HomeActivity"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".TrackOrderActivity" />
         <activity android:name=".ResultActivity" />
         <activity android:name=".FavoritesActivity" />
-        <activity android:name=".EditProfileActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".EditProfileActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".AllProductsActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

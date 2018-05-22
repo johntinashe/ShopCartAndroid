@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -29,8 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.lzyzsd.circleprogress.ArcProgress;
@@ -45,7 +42,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.michaelmuenzer.android.scrollablennumberpicker.ScrollableNumberPicker;
 import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.models.CartProduct;
 import com.shopcart.shopcart.models.Product;
@@ -54,7 +50,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +66,7 @@ public class CartActivity extends AppCompatActivity {
     private Button checkout;
     private FirebaseAuth auth;
     private ArcProgress arcProgress;
+    private TextView toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +94,8 @@ public class CartActivity extends AppCompatActivity {
         cartRecyclerView = findViewById(R.id.cartRecyclerView);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         cartRecyclerView.setHasFixedSize(true);
+        toolbarTitle = action_bar_view.findViewById(R.id.toolbarTitle);
+        toolbarTitle.setText("My Cart");
         totalToPay = findViewById(R.id.totalToPay);
         checkout = findViewById(R.id.checkoutBtn);
 

@@ -90,7 +90,7 @@ public class LoginFragment extends Fragment {
             }else {
                 dialog.dismiss();
 
-                auth.signInWithEmailAndPassword(em,pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                auth.signInWithEmailAndPassword(em, pass).addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         if(auth !=null && getActivity() != null)

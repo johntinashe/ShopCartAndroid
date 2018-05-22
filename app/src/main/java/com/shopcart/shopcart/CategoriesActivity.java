@@ -2,13 +2,11 @@ package com.shopcart.shopcart;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Settings;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,13 +20,11 @@ import android.widget.TextView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.shopcart.shopcart.Utils.GridSpacingItemDecoration;
 import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.models.Category;
 import com.squareup.picasso.Callback;
@@ -36,7 +32,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class CategoriesActivity extends AppCompatActivity {
 
@@ -47,13 +42,8 @@ public class CategoriesActivity extends AppCompatActivity {
     private FirestoreRecyclerAdapter adapter;
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    private TextView toolbarTitle;
 
-    private int images []= {
-            R.drawable.milk,
-            R.drawable.baby,
-            R.drawable.electronics,
-            R.drawable.meat,
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +66,8 @@ public class CategoriesActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setCustomView(action_bar_view);
         goToCart = action_bar_view.findViewById(R.id.toolbar_cart);
+        toolbarTitle = action_bar_view.findViewById(R.id.toolbarTitle);
+        toolbarTitle.setText("All Products");
         ImageView drawerToggle = action_bar_view.findViewById(R.id.drawerToggle);
         numberProducts = action_bar_view.findViewById(R.id.tv_number_of_products);
         goToCart.setOnClickListener(new View.OnClickListener() {

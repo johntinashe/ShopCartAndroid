@@ -40,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.shopcart.shopcart.AllProductsActivity;
 import com.shopcart.shopcart.CartActivity;
 import com.shopcart.shopcart.CategoriesActivity;
 import com.shopcart.shopcart.FavoritesActivity;
@@ -48,7 +49,6 @@ import com.shopcart.shopcart.MainActivity;
 import com.shopcart.shopcart.R;
 import com.shopcart.shopcart.RegisterAndLoginActivity;
 import com.shopcart.shopcart.ResultActivity;
-import com.shopcart.shopcart.ViewProductActivity;
 import com.shopcart.shopcart.models.CartProduct;
 import com.shopcart.shopcart.models.Product;
 import com.shopcart.shopcart.models.User;
@@ -167,6 +167,13 @@ public class Utils {
                         Intent intent = new Intent(activity.getApplicationContext(), HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("fromWhere", "fromContactUs");
+                        activity.getApplicationContext().startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.START);
+                        return true;
+                    }
+                    case R.id.ic_all_products: {
+                        Intent intent = new Intent(activity.getApplicationContext(), AllProductsActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         activity.getApplicationContext().startActivity(intent);
                         drawerLayout.closeDrawer(Gravity.START);
                         return true;
@@ -357,7 +364,7 @@ public class Utils {
                             @SuppressWarnings("VisibleForTests") final String download_url = task.getResult().getDownloadUrl().toString();
                             UploadTask uploadTask = thumbfile.putBytes(thumb_byte);
 
-                            uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            uploadTask.addOnCompleteListener(activity, new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> thumbtask) {
                                     @SuppressWarnings("VisibleForTests") String url = thumbtask.getResult().getDownloadUrl().toString();
@@ -450,7 +457,7 @@ public class Utils {
                 database.collection("users").document(auth.getCurrentUser().getUid()).collection("favorites")
                         .document(prodId)
                         .delete()
-                        .addOnCompleteListener( new OnCompleteListener<Void>() {
+                        .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){

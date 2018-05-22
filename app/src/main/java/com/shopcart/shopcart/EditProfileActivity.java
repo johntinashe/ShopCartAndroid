@@ -1,11 +1,10 @@
 package com.shopcart.shopcart;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -70,7 +69,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         if (auth.getCurrentUser() != null) {
             user.collection("users").document(auth.getCurrentUser().getUid())
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    .addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(DocumentSnapshot documentSnapshot, final FirebaseFirestoreException e) {
                             if(documentSnapshot.exists()){

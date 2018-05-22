@@ -18,6 +18,7 @@
         android:id="@+id/favorites_nav_drawer"/>
     <item android:title="All Products"
         android:icon="@drawable/ic_action_basket"
+        android:id="@+id/ic_all_products"
         android:iconTint="@color/white" />
     <item android:title="My Cart"
         android:icon="@drawable/ic_action_cart"

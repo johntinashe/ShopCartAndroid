@@ -3,6 +3,7 @@ package com.shopcart.shopcart;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +42,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.lid.lib.LabelImageView;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.shopcart.shopcart.Utils.GridSpacingItemDecoration;
-import com.shopcart.shopcart.Utils.Utils;
 import com.shopcart.shopcart.models.CartProduct;
 import com.shopcart.shopcart.models.Category;
 import com.shopcart.shopcart.models.Product;
@@ -68,6 +67,8 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
     public static final String Name = "nameKey";
     SharedPreferences sharedpreferences;
     boolean sort_price , sort_name;
+    EditText prd_name;
+
     public CategoryDialog() {
         // Required empty public constructor
     }
@@ -83,7 +84,7 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
 
         db = FirebaseFirestore.getInstance();
         final View view = inflater.inflate(R.layout.category_products_dialog, container, false);
-        EditText prd_name = view.findViewById(R.id.search_product);
+        prd_name = view.findViewById(R.id.search_product);
         cardView = view.findViewById(R.id.searchProductCardView);
         show = view.findViewById(R.id.showSearch);
         show.setClickable(true);
@@ -133,10 +134,10 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
         prod_recycler.setHasFixedSize(true);
         prod_recycler.setLayoutManager(layoutManager);
         getQtyandName(id);
-        getProducts();
         showMenu();
         return  view;
     }
+
 
     // TODO : show no products available
     public void getQtyandName(final String i){
@@ -176,6 +177,24 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
     }
 
     private void performSearch() {
+        if (prd_name.getText() != null && prd_name.getText().toString().length() > 0) {
+            String name = prd_name.getText().toString();
+            name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+            db.collection("products").orderBy("product_name").startAt(name).endAt(name + "\uf8ff")
+                    .addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            if (documentSnapshots != null) {
+                                if (!documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot document : documentSnapshots) {
+                                        Product product = document.toObject(Product.class);
+                                        Log.d("Product", product.getProduct_name());
+                                    }
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     public void addToCart(final String id, final int nbItems ,final String name) {
@@ -243,12 +262,12 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
             }
 
             @Override
-            protected void onBindViewHolder(final ProductHolder holder, int position, final Product model) {
+            protected void onBindViewHolder(final ProductHolder holder, final int position, final Product model) {
                 holder.name.setText(model.getProduct_name());
                 holder.price.setText(model.getProduct_price() +" DT");
                 holder.quantity.setMaxValue(model.getProduct_quantity());
                 final String id = options.getSnapshots().getSnapshot(position).getId();
-                final int[] nb = new int[1];
+                final int[] nb = {1};
                 holder.quantity.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
                     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -256,10 +275,36 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
                     }
                 });
 
+                if (model.getProduct_quantity() == 0) {
+                    holder.addToCart.setEnabled(false);
+                    holder.addToCart.setBackgroundResource(R.drawable.gray_add_to_cart_bg);
+                    holder.quantity.setVisibility(View.INVISIBLE);
+                    // holder.labelImageView.setLabelText("Out of Stock");
+                    //  holder.labelImageView.setLabelBackgroundColor(Color.RED);
+                    //  holder.labelImageView.setLabelTextColor(Color.WHITE);
+                } else {
+                    holder.addToCart.setEnabled(true);
+                    holder.addToCart.setBackgroundResource(R.drawable.blue_bg);
+                    holder.quantity.setVisibility(View.VISIBLE);
+                    //   holder.labelImageView.setLabelText("");
+                    //   holder.labelImageView.setLabelBackgroundColor(Color.WHITE);
+                    //   holder.labelImageView.setLabelTextColor(Color.WHITE);
+                }
+
                 holder.addToCart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                        addToCart(id, nb[0],model.getProduct_name());
+                    }
+                });
+
+                holder.product_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), ViewProductActivity.class);
+                        intent.putExtra("product_id", options.getSnapshots().getSnapshot(position).getId());
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
                 });
 
@@ -325,6 +370,7 @@ public class CategoryDialog extends BottomSheetDialogFragment implements View.On
     @Override
     public void onStart() {
         super.onStart();
+        getProducts();
         adapter.startListening();
     }
 

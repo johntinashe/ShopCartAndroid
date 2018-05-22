@@ -8,34 +8,34 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.androidadvance.topsnackbar.TSnackbar;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.shopcart.shopcart.Utils.GetLastSeen;
-import com.shopcart.shopcart.Utils.Utils;
-import com.shopcart.shopcart.models.Favorite;
 import com.shopcart.shopcart.models.Payment;
-import com.stripe.model.Charge;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -49,6 +49,11 @@ public class PaymentsFragment extends Fragment {
     private FirestoreRecyclerAdapter adapter;
     private View viw;
     private Activity activity;
+
+    //empty widgets
+    private TextView em1, em2;
+    private CircleImageView img;
+    private Button empBtn;
 
     public PaymentsFragment() {
         // Required empty public constructor
@@ -69,6 +74,44 @@ public class PaymentsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         getPayments();
         viw = view;
+        em1 = view.findViewById(R.id.emptyTv1);
+        em2 = view.findViewById(R.id.emptyTV2);
+        img = view.findViewById(R.id.emptyImg);
+        empBtn = view.findViewById(R.id.empty_back_to_home);
+
+        db.collection("users").document(auth.getCurrentUser().getUid()).collection("payments")
+                .addSnapshotListener(activity, new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        if (documentSnapshots != null)
+                            if (documentSnapshots.isEmpty()) {
+                                em1.setText("No Payments Found");
+                                em2.setText("Looks like you have not made any payment");
+                                em1.setVisibility(View.VISIBLE);
+                                em2.setVisibility(View.VISIBLE);
+                                img.setVisibility(View.VISIBLE);
+                                empBtn.setVisibility(View.VISIBLE);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(700)
+                                        .playOn(em1);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1000)
+                                        .playOn(em2);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1200)
+                                        .playOn(img);
+                                YoYo.with(Techniques.FadeIn)
+                                        .duration(1500)
+                                        .playOn(empBtn);
+                            } else {
+                                em1.setVisibility(View.INVISIBLE);
+                                em2.setVisibility(View.INVISIBLE);
+                                img.setVisibility(View.INVISIBLE);
+                                empBtn.setVisibility(View.INVISIBLE);
+                            }
+                    }
+                });
+
         return view;
     }
 

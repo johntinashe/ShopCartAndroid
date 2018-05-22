@@ -8,7 +8,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,6 +90,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 } else if (string.equals("fromContactUs")) {
                     setfragment(contactUsFragment);
                     bottomNavigationView.setSelectedItemId(R.id.contact_us);
+                } else if (string.equals("fromPayments")) {
+                    setfragment(paymentsFragment);
+                    bottomNavigationView.setSelectedItemId(R.id.payments);
                 }
             }
         }
