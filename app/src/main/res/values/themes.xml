@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose draws everything; this only sets the window before first frame. -->
+    <style name="Theme.ShopCart" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+
+    <color name="window_background">#F6F7F5</color>
+    <color name="brand_green">#1B6B4A</color>
+</resources>
