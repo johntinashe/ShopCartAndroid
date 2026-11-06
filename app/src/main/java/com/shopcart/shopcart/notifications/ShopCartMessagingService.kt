@@ -18,6 +18,9 @@ import kotlinx.coroutines.launch
 /** Receives order-status pushes sent by the onOrderStatus Cloud Function. */
 class ShopCartMessagingService : FirebaseMessagingService() {
 
+    // Deprecated in favour of onRegistered (installation IDs); kept until the
+    // backend sends by installation ID. See AuthRepository.syncDeviceToken.
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onNewToken(token: String) {
         container.appScope.launch { runCatching { container.auth.syncDeviceToken(token) } }
     }

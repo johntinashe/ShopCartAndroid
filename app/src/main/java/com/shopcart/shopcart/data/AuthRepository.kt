@@ -81,7 +81,12 @@ class AuthRepository(
         ).await()
     }
 
-    /** Stores this device's FCM token so order updates reach the phone. */
+    /**
+     * Stores this device's FCM token so order updates reach the phone.
+     * FCM is moving to installation-ID targeting (FirebaseMessaging.register());
+     * tokens still work and the onOrderStatus function sends to them.
+     */
+    @Suppress("DEPRECATION")
     suspend fun syncDeviceToken(token: String? = null) {
         val current = uid ?: return
         val value = token ?: runCatching { messaging.token.await() }.getOrNull() ?: return
