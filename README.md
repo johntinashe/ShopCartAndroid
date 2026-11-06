@@ -50,7 +50,7 @@ replace that file.
 ## Tech
 Kotlin 2.4 · Jetpack Compose (BOM 2026.09) · Material 3 · Navigation Compose ·
 Lifecycle ViewModel · Coroutines/Flow · Firebase (Auth, Firestore, Functions,
-Messaging; BoM 35.1) · Coil 3 · AGP 9.5 / Gradle 9.6
+Messaging; BoM 35.1) · Coil 3 · AGP 9.2 / Gradle 9.6
 
 ## Not carried over from 2018
 QR code scanning and back‑in‑stock alerts were dropped in this version. Profile
