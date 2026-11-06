@@ -73,6 +73,9 @@ fun ProductImage(url: String, modifier: Modifier = Modifier, contentDescription:
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
+                onError = { state ->
+                    android.util.Log.w("ShopCart", "Image failed to load: $url", state.result.throwable)
+                },
             )
         }
     }

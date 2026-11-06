@@ -1,10 +1,8 @@
 package com.shopcart.shopcart.data
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class OrderRepository(
@@ -12,13 +10,12 @@ class OrderRepository(
     private val functions: FirebaseFunctions,
 ) {
     fun orders(uid: String): Flow<List<Order>> =
+        // Sorted on the device so no composite index is needed.
         db.collection("orders")
             .whereEqualTo("user_id", uid)
-            .orderBy("placed_at", Query.Direction.DESCENDING)
-            .limit(100)
             .asFlow()
-            .map { snap -> snap.documents.map { it.toOrder() } }
-            .catch { emit(emptyList()) }
+            .map { snap -> snap.documents.map { it.toOrder() }.sortedByDescending { it.placedAt } }
+            .logErrors("orders", emptyList())
 
     fun order(id: String): Flow<Order?> =
         db.collection("orders").document(id).asFlow()

@@ -5,7 +5,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 /** Customer support chat: messages/{uid}/userQueries. */
@@ -19,7 +18,7 @@ class ChatRepository(private val db: FirebaseFirestore) {
             .limitToLast(300)
             .asFlow()
             .map { snap -> snap.documents.map { it.toChatMessage() } }
-            .catch { emit(emptyList()) }
+            .logErrors("chat", emptyList())
 
     suspend fun send(uid: String, displayName: String, text: String) {
         val now = System.currentTimeMillis()

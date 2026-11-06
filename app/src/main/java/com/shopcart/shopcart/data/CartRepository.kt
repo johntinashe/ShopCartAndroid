@@ -3,7 +3,6 @@ package com.shopcart.shopcart.data
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
@@ -26,12 +25,12 @@ class CartRepository(
                 val qty = (doc.get("number") as? Number)?.toInt() ?: 1
                 CartLine(product, qty.coerceAtLeast(1))
             }
-        }.catch { emit(emptyList()) }
+        }.logErrors("cart", emptyList())
 
     fun itemCount(uid: String): Flow<Int> =
         cart(uid).asFlow()
             .map { snap -> snap.documents.sumOf { (it.get("number") as? Number)?.toInt() ?: 1 } }
-            .catch { emit(0) }
+            .logErrors("cartCount", 0)
 
     /** Adds [quantity] more of [product], capped at the stock level. Returns the new quantity. */
     suspend fun add(uid: String, product: Product, quantity: Int = 1): Int {

@@ -2,7 +2,6 @@ package com.shopcart.shopcart.data
 
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
@@ -15,7 +14,7 @@ class FavoritesRepository(
     fun ids(uid: String): Flow<Set<String>> =
         favorites(uid).asFlow()
             .map { snap -> snap.documents.map { it.id }.toSet() }
-            .catch { emit(emptySet()) }
+            .logErrors("favoritesIds", emptySet())
 
     fun products(uid: String): Flow<List<Product>> =
         combine(ids(uid), catalog.products) { ids, products -> products.filter { it.id in ids } }

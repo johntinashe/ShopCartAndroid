@@ -8,6 +8,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -49,4 +50,14 @@ fun DocumentReference.asFlow(): Flow<DocumentSnapshot> = callbackFlow {
         }
     }
     awaitClose { registration.remove() }
+}
+
+/**
+ * Logs a failed Firestore listener (e.g. PERMISSION_DENIED, missing index)
+ * to Logcat under the "ShopCart" tag, then continues with [fallback] so the
+ * screen shows an empty state instead of crashing.
+ */
+fun <T> Flow<T>.logErrors(what: String, fallback: T): Flow<T> = catch { e ->
+    android.util.Log.e("ShopCart", "Loading $what failed", e)
+    emit(fallback)
 }
